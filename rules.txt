@@ -1,0 +1,29 @@
+torre(1..6).
+attiva(1).
+attiva(3).
+attiva(4).
+costo(1,10).
+costo(2,10).
+costo(3,10).
+costo(4,10).
+costo(5,5).
+costo(6,10).
+monete(15).
+
+attivata(T) | nonAttivata(T):- torre(T), costo(T,C), monete(M), C <= M.
+
+%non si può attivare una torretta attiva
+:- attivata(T), attiva(T).
+
+moneteSpese(MS):- #sum{C,T : attivata(T), costo(T,C)} = MS.
+
+%non si può spendere più di quanto si possiede
+:- monete(M), moneteSpese(MS), MS > M.
+
+%si cerca di attivarne il più possibile ma cercando di risparmiare
+:~ #count{T:attivata(T)} = X1, #count{T:torre(T)} = X2.[X2-X1@2]
+:~ moneteSpese(MS). [MS@1]
+
+% dati da implementare: range, numero nemici di tipo 1-2-3, posizione di ogni nemico
+% modificare la versione semplificata dell'attivazione, specificando la posizione con un certo criterio,
+% per esempio: attivo torre 2 su x,y con potere rallentante/altro
