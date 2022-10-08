@@ -1,0 +1,10 @@
+COSA DOVREBBE GESTIRE L'IA:
+
+1) tenendo conto dei soldi disponibili, valutare se è meglio upgradare una torretta o metterne un'altra in un altro slot disponibile.
+2) tenendo conto dei soldi disponibili, piazzare le torrette. (io le farei mettere dal punto più vicino dello spawn nemico al punto più vicino della nostra base)
+
+COSE DA TENERE IN CONTO SE VOGLIAMO FARLO COME CI AVEVA DETTO CALIMERI:
+
+1) creare un file che l'IA andrà a riempire di informazioni riguardanti le wave dei nemici per ogni round.
+2) ad inizio partita l'IA legge il file così sa che nemici ci ssaranno fino al punto precedente e quindi ottimizzerà la disposizione delle torrette.
+3) aggiornamento continuo sul file informazioni wave per ottimizzare ad ogni nuova partita il comportamento dell'IA.
