@@ -1,21 +1,38 @@
+%torrette totali
 torre(1..6).
+
+%torrette già attive
 attiva(1).
 attiva(3).
 attiva(4).
-costo(1,10).
-costo(2,10).
-costo(3,10).
-costo(4,10).
-costo(5,5).
-costo(6,10).
+
+%costo base torri
+costoTorre(10).
+
+%monete a disposiione
 monete(15).
 
-attivata(T) | nonAttivata(T):- torre(T), costo(T,C), monete(M), C <= M.
+%torri con abilità
+abilita1(1).
+abilita1(4).
+abilita2(3).
+
+%quanti nemici sono passati dopo la torretta 1 prima di passare dalla torretta 2
+quantiNemiciDopo(1,8).
+
+%quanti nemici sono passati dopo la torretta 3 prima di passare dalla torretta 4
+quantiNemiciDopo(3,3).
+
+%quanti nemici sono passati dopo la torretta 4 e oltrepasseranno la linea di difesa
+quantiNemiciDopo(4,0).
+
+%quale torretta andrà attivata
+attivata(T) | nonAttivata(T):- torre(T), costoTorre(C), monete(M), C <= M.
 
 %non si può attivare una torretta attiva
 :- attivata(T), attiva(T).
 
-moneteSpese(MS):- #sum{C,T : attivata(T), costo(T,C)} = MS.
+moneteSpese(MS):- #sum{C,T : attivata(T), costoTorre(C)} = MS.
 
 %non si può spendere più di quanto si possiede
 :- monete(M), moneteSpese(MS), MS > M.
@@ -25,5 +42,5 @@ moneteSpese(MS):- #sum{C,T : attivata(T), costo(T,C)} = MS.
 :~ moneteSpese(MS). [MS@1]
 
 % dati da implementare: range, numero nemici di tipo 1-2-3, posizione di ogni nemico
-% modificare la versione semplificata dell'attivazione, specificando la posizione con un certo criterio,
+% modificare la versione semplificata dellattivazione, specificando la posizione con un certo criterio,
 % per esempio: attivo torre 2 su x,y con potere rallentante/altro
