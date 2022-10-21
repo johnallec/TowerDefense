@@ -1,46 +1,45 @@
-%torrette totali
+%torrette totali (fatti)
 torre(1..6).
 
-%torrette già attive
+%torrette già attive (fatti)
 attiva(1).
 attiva(3).
 attiva(4).
 
-%costo base torri
+%costo base torri (fatti)
 costoTorre(10).
 
-%monete a disposiione
+%monete a disposiione (fatti)
 monete(15).
 
-%torri con abilità
-abilita1(1).
-abilita1(4).
-abilita2(3).
+%elenco abilità torri e costi (fatti)
+abilita(colpoDoppio,10).
+abilita(velocita,8).
+abilita(lanciafiamme,15).
 
-%quanti nemici sono passati dopo la torretta 1 prima di passare dalla torretta 2
-quantiNemiciDopo(1,8).
+% ablità A per torre T abilitaTorre(A,T) (fatti)
+abilitaTorre(colpoDoppio,1).
+abilitaTorre(velocita,4).
 
-%quanti nemici sono passati dopo la torretta 3 prima di passare dalla torretta 4
-quantiNemiciDopo(3,3).
+% N nemici con abilità A abilitaNemici(N,A) (fatti)
+abilitaNemici(3,base).
+abilitaNemici(3,fuoco).
+abilitaNemici(3,corsa).
+abilitaNemici(3,resistenza).
 
-%quanti nemici sono passati dopo la torretta 4 e oltrepasseranno la linea di difesa
-quantiNemiciDopo(4,0).
+moneteSpese(MS):- #sum{C,T : attivata(T), costoTorre(C)} = MS1, #sum{C,A : nuovaAbilitaTorre(A,_), abilita(A,C)} = MS2, MS = MS1 + MS2.
 
-%quale torretta andrà attivata
-attivata(T) | nonAttivata(T):- torre(T), costoTorre(C), monete(M), C <= M.
+torretteAttive(N):- #count{T:attiva(T)} = N.
 
-%non si può attivare una torretta attiva
-:- attivata(T), attiva(T).
+nuovaAbilitaTorre(A,T) | nonNuovaAbilitaTorre(A,T):- attiva(T), abilita(A,C), monete(M), C < M, torretteAttive(TorriAttive), #max{Torre:torre(Torre)} <= TorriAttive*2.
 
-moneteSpese(MS):- #sum{C,T : attivata(T), costoTorre(C)} = MS.
+attivata(T) | nonAttivata(T):- torre(T), costoTorre(C), monete(M), C <= M, not attiva(T).
+
+:- nuovaAbilitaTorre(A1,T), nuovaAbilitaTorre(A2,T), A1 != A2.
 
 %non si può spendere più di quanto si possiede
 :- monete(M), moneteSpese(MS), MS > M.
+:~ torretteAttive(TorriAttive), #max{Torre:torre(Torre)} <= TorriAttive*2, #count{T:attivata(T)} = NumeroTorriAttivate. [NumeroTorriAttivate@2]
 
-%si cerca di attivarne il più possibile ma cercando di risparmiare
-:~ #count{T:attivata(T)} = X1, #count{T:torre(T)} = X2.[X2-X1@2]
-:~ moneteSpese(MS). [MS@1]
-
-% dati da implementare: range, numero nemici di tipo 1-2-3, posizione di ogni nemico
-% modificare la versione semplificata dellattivazione, specificando la posizione con un certo criterio,
-% per esempio: attivo torre 2 su x,y con potere rallentante/altro
+% 1 torretta gestisce N nemici, non bisogna aggiungere o fare upgrade se ci sono per esempio N*2 nemici in gioco e 2 torrette disponibili
+% cambiare abilità torri in upgrade livello 1-2-3
