@@ -6,20 +6,17 @@ attiva(1).
 attiva(3).
 attiva(4).
 
-%costo base torri (fatti)
+%costo base torri e aumenti di livello (fatti)
 costoTorre(10).
+costoAumentoDiLivello(7).
 
 %monete a disposiione (fatti)
 monete(15).
 
-%elenco abilità torri e costi (fatti)
-abilita(colpoDoppio,10).
-abilita(velocita,8).
-abilita(lanciafiamme,15).
-
-% ablità A per torre T abilitaTorre(A,T) (fatti)
-abilitaTorre(colpoDoppio,1).
-abilitaTorre(velocita,4).
+%livello L torretta T livello(L,T) (fatti)
+livelloTorretta(1,1).
+livelloTorretta(1,3).
+livelloTorretta(2,4).
 
 % N nemici con abilità A abilitaNemici(N,A) (fatti)
 abilitaNemici(3,base).
@@ -27,19 +24,24 @@ abilitaNemici(3,fuoco).
 abilitaNemici(3,corsa).
 abilitaNemici(3,resistenza).
 
-moneteSpese(MS):- #sum{C,T : attivata(T), costoTorre(C)} = MS1, #sum{C,A : nuovaAbilitaTorre(A,_), abilita(A,C)} = MS2, MS = MS1 + MS2.
+numeroTorriTotali(NT):- #max{Torre:torre(Torre)} = NT.
+
+numeroTorriConUpgrade(NU):- #count{T:livelloTorretta(L,T),L>1} = NU.
+
+moneteSpese(MS):- #sum{C,T : attivata(T), costoTorre(C)} = MS1, #sum{C,T : nuovoLivelloTorretta(_,T), costoAumentoLivello(C)} = MS2, MS = MS1 + MS2.
 
 torretteAttive(N):- #count{T:attiva(T)} = N.
 
-nuovaAbilitaTorre(A,T) | nonNuovaAbilitaTorre(A,T):- attiva(T), abilita(A,C), monete(M), C < M, torretteAttive(TorriAttive), #max{Torre:torre(Torre)} <= TorriAttive*2.
+nuovoLivelloTorretta(A,T) | nonNuovoLivelloTorretta(A,T):- attiva(T), livelloTorretta(L,T), L < 3.
 
 attivata(T) | nonAttivata(T):- torre(T), costoTorre(C), monete(M), C <= M, not attiva(T).
+
+:~ torretteAttive(TorriAttive), numeroTorriTotali(NT), numeroTorriConUpgrade(NU), NT <= TorriAttive - NU * 2, #count{T:attivata(T)} = NumeroTorriAttivate, NumeroTorriAttivate + TorriAttive <  NT. [NumeroTorriAttivate@2]
 
 :- nuovaAbilitaTorre(A1,T), nuovaAbilitaTorre(A2,T), A1 != A2.
 
 %non si può spendere più di quanto si possiede
 :- monete(M), moneteSpese(MS), MS > M.
-:~ torretteAttive(TorriAttive), #max{Torre:torre(Torre)} <= TorriAttive*2, #count{T:attivata(T)} = NumeroTorriAttivate. [NumeroTorriAttivate@2]
 
-% 1 torretta gestisce N nemici, non bisogna aggiungere o fare upgrade se ci sono per esempio N*2 nemici in gioco e 2 torrette disponibili
-% cambiare abilità torri in upgrade livello 1-2-3
+% 1 torretta gestisce N nemici, non bisogna aggiungere o fare upgrade se ci sono per esempio N*2 nemici in gioco e 2
+% torrette disponibili (aggiungere un predicato che ritorna lo script dove si valuta una situazione di "tranquillità")
