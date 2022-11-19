@@ -43,5 +43,7 @@ attivata(T) | nonAttivata(T):- torre(T), costoTorre(C), monete(M), C <= M, not a
 %non si può spendere più di quanto si possiede
 :- monete(M), moneteSpese(MS), MS > M.
 
-% 1 torretta gestisce N nemici, non bisogna aggiungere o fare upgrade se ci sono per esempio N*2 nemici in gioco e 2
-% torrette disponibili (aggiungere un predicato che ritorna lo script dove si valuta una situazione di "tranquillità")
+% 1 torretta gestisce N nemici, non bisogna aggiungere o fare upgrade se ci sono per esempio N*2 nemici in gioco e 2 torrette disponibili (aggiungere
+% un predicato che ritorna lo script dove si valuta una situazione di "tranquillità")
+
+% creare 2 tipi di torri differenti ognuno con propri ugrade (livello 1-2-3)
